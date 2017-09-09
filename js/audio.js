@@ -76,7 +76,7 @@ $(function() {
 
 	info({ helloFromAudio: true });
 
-	var context = audioContext = new webkitAudioContext(),
+	var context = audioContext = new AudioContext(),
 			source,
 			output;
 
@@ -102,7 +102,7 @@ $(function() {
 			value: 2
 		});
 
-	    outputMix = audioContext.createGainNode();
+	    outputMix = audioContext.createGain();
 
 	    
 		// Create the filter
@@ -133,11 +133,11 @@ $(function() {
    });
 
 	function playAudio() {
-		audioInput.noteOn(0);
+		audioInput.start(0);
 	}
 
 	function pauseAudio() {
-		audioInput.noteOff(0);
+		audioInput.stop(0);
 	}
 
 	window.playAudio = playAudio;
@@ -242,23 +242,23 @@ function createRingModulator() {
 
 	  vIn = context.createOscillator();
 	  vIn.frequency.value = 30;
-	  vIn.noteOn(0);
-	  vInGain = context.createGainNode();
+	  vIn.start(0);
+	  vInGain = context.createGain();
 	  vInGain.gain.value = 0.5;
-	  vInInverter1 = context.createGainNode();
+	  vInInverter1 = context.createGain();
 	  vInInverter1.gain.value = -1;
-	  vInInverter2 = context.createGainNode();
+	  vInInverter2 = context.createGain();
 	  vInInverter2.gain.value = -1;
 	  vInDiode1 = new DiodeNode(context);
 	  vInDiode2 = new DiodeNode(context);
-	  vInInverter3 = context.createGainNode();
+	  vInInverter3 = context.createGain();
 	  vInInverter3.gain.value = -1;
 	  //player = new SamplePlayer(context);
-	  vcInverter1 = context.createGainNode();
+	  vcInverter1 = context.createGain();
 	  vcInverter1.gain.value = -1;
 	  vcDiode3 = new DiodeNode(context);
 	  vcDiode4 = new DiodeNode(context);
-	  outGain = context.createGainNode();
+	  outGain = context.createGain();
 	  outGain.gain.value = 4;
 	  compressor = context.createDynamicsCompressor();
 	  compressor.threshold.value = -12;

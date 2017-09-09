@@ -17,6 +17,8 @@ function startVideo() {
         var myVideoStream = window.URL.createObjectURL(localMediaStream);
         video.attr('src', myVideoStream);
         startVideoAndAR(video[0]);
+    }, () => {
+        console.log('Error getting video');
     });
 
 

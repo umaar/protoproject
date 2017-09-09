@@ -1,15 +1,15 @@
-PROTOTHON!
+# Protothon
 
-Deployed to: http://protoproject.herokuapp.com/
-Access the ARCode markers from http://protoproject.herokuapp.com/marker.html
+Live Demo: [https://umaar.github.io/protoproject](https://umaar.github.io/protoproject/index.html)
 
-This project uses WebRTC API's to enable control of Audio filters using ARCodes. Hit the start button and then load up
+Access the ARCode markers: [https://umaar.github.io/protoproject/markers.html](https://umaar.github.io/protoproject/markers.html)
+
+This project uses WebRTC API's to enable control of Audio filters using ARCodes. Hit _Play Audio_ and then load up
 the markers using your mobile device. Based on the rotation angle of the ARCode, the audio filter settings will be adjusted.
 
-Current work in progress includes enabling peer-to-peer video to allow for multiple people to control each others 
-audio.
+## Quick Preview:
 
-## Screenshot:
+_💡 Notice the playback rate_
 
-![Screenshot](https://raw.github.com/mustafasezgin/protoproject/master/srceenshot.png)
+![Preview](ar-demo.gif)
 

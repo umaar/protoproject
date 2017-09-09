@@ -3,9 +3,9 @@ $(function() {
 
 	radio('Audio:filter').subscribe(function(msg) {
 		var filter = msg.filter;
-		$('#'+filter).find('input').val(msg.value);
-		$('#'+filter).find('.value').text(msg.value)
-		//Move the sliders around
+		const value = parseFloat(parseFloat(msg.value).toFixed(2));
+		$('#'+filter).find('input').val(value);
+		$('#'+filter).find('.value').text(value);
 	});
 
 	$('.slider input').on('change', function(val) {
@@ -17,7 +17,7 @@ $(function() {
 		radio("Controls:filter").broadcast({
 			filter: filterName,
 			value: $(this).val()
-		});		
+		});
 	});
 
 });

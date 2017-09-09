@@ -41,7 +41,7 @@ p {
 /* structure */
 
 .site-box {
-    padding: 20px 20px 0;
+    padding: 40px 40px 0;
     border: 1px solid #ccc;
     margin: 0 0 3em;
     background: #fff;
@@ -63,8 +63,8 @@ p {
 }
 
 .tagline {
-    margin: 0 0 0.75em;
-    font-size: 0.9em;
+    margin: 2em 0 3em;
+    font-size: 1.2em;
 }
 
 .description {
@@ -83,7 +83,7 @@ p {
     *display: inline;
     *zoom: 1;
 
-    margin: 1.5em 0.75em 0;
+    margin: 1.5em 0.75em 50px;
     vertical-align: bottom;
 }
 
@@ -135,7 +135,8 @@ p {
     box-shadow: none;
     color: #666;
     font-size: 1.25em;
-
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .btn-download-alt:hover,
