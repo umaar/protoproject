@@ -1,16 +1,48 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		
-		<title>Marker</title>
-		
-		<style type="text/css">
-		button {
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+
+	<title>Marker</title>
+
+	<style type="text/css">
+	button {
+			color: white;
+			border-radius: 4px;
+			text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+			background: rgb(66, 184, 221);
 			display: inline-block;
-			width: 30%%;
-			height: 20px;
+			zoom: 1;
+			white-space: nowrap;
+			vertical-align: middle;
+			text-align: center;
+			cursor: pointer;
+			-webkit-user-drag: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			letter-spacing: 0.01em;
+			font-size: 1em;
+			margin: 10px;
+			padding: 10px;
+			border: 5px solid white;
+		}
+
+		button:active {
+			outline: none;
+		}
+
+		button:focus {outline:0;}
+
+
+		button.active {
+			border: 5px solid #bbb;
+		}
+
+		button:hover {
+			opacity: 0.8;
 		}
 
 		body {
@@ -18,17 +50,18 @@
 		}
 
 		img {
-			width: 90%;
-			margin: 50px auto;
+			object-fit: contain;
+			width: 85vw;
+			height: 85vh;
 		}
-		</style>
-	</head>
-	<body>
-		<div>
-			<button onclick="chooseMarker(this.value)" value="1">Playback</button>
-			<button onclick="chooseMarker(this.value)" value="2">Distortion</button>
-			<button onclick="chooseMarker(this.value)" value="3">Low Pass</button>
-		</div>
+	</style>
+</head>
+<body>
+	<div class="controls">
+		<button value="1">Playback</button>
+		<button value="2">Distortion</button>
+		<button value="3">Low Pass</button>
+	</div>
 		<!--
 		<div>
 			<button onclick="chooseMarker(this.value)" value="0.png">This one</button>
@@ -37,20 +70,31 @@
 			<button onclick="chooseMarker(this.value)" value="3">Low Pass</button>
 			<button onclick="chooseMarker(this.value)" value="4">4</button>
 		</div>
-		-->
-		<img />
-		<script>
+	-->
+	<img />
+	<script>
 
-			function chooseMarker(num) {
-				displayMarkerImage(num);
-				//var div = document.querySelector('div');
-				//div.parentNode.removeChild(div);
-			}
+		function chooseMarker(num) {
+			displayMarkerImage(num);
+		}
 
-			function displayMarkerImage(num) {
-				document.querySelector('img').src = 'markers/' + num;
-			}
+		function displayMarkerImage(num) {
+			document.querySelector('img').src = 'markers/' + num;
+		}
 
+		function init() {
+			const buttons = [...document.querySelectorAll('.controls button')];
+			buttons.forEach(btn => {
+				btn.addEventListener('click', evt => {
+					buttons.forEach(btn => btn.classList.remove('active'));
+					evt.target.classList.add('active');
+					chooseMarker(evt.target.value)
+				});
+			})
+			document.querySelector('button').click();
+		}
+
+		window.onload = init;
 			/*
 			function displayMarkerFromHash() {
 				console.log('marker');
@@ -63,4 +107,4 @@
 			*/
 		</script>
 	</body>
-</html>
+	</html>

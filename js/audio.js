@@ -1,38 +1,36 @@
-$(function() {
-
-
+$(() => {
 	window.startAudio = function () {
-		console.log('startAudio')
+		console.log('startAudio');
 		playAudio();
-	}	
+	};
 
-	var visualisation = {
-		init: function() {
-			var visualisation = $("<canvas>").appendTo(".media");
-			visualisation.addClass("visualisation");
+	const visualisation = {
+		init() {
+			const visualisation = $('<canvas>').appendTo('.media');
+			visualisation.addClass('visualisation');
 
-			//canvas = document.createElement('canvas');
+			// Canvas = document.createElement('canvas');
 			// 1024 is the number of samples that's available in the frequency data
 			visualisation[0].width = 1024;
 			// 255 is the maximum magnitude of a value in the frequency data
 			visualisation[0].height = 255;
 
-			var canvasContext = visualisation[0].getContext('2d');
+			const canvasContext = visualisation[0].getContext('2d');
 			canvasContext.fillStyle = '#000';
 
 			this.canvasContext = canvasContext;
 			this.canvas = visualisation[0];
-			this.draw();	
+			this.draw();
 		},
 
-		draw: function() {
-			var canvasContext = this.canvasContext;
-			var canvas = this.canvas;
+		draw() {
+			const canvasContext = this.canvasContext;
+			const canvas = this.canvas;
 			// Setup the next frame of the drawing
-		 	 webkitRequestAnimationFrame(this.draw.bind(this));
-			  
+		 	 requestAnimationFrame(this.draw.bind(this));
+
 		  // Create a new array that we can copy the frequency data into
-			var freqByteData = new Uint8Array(analyser.frequencyBinCount);
+			const freqByteData = new Uint8Array(analyser.frequencyBinCount);
 			// Copy the frequency data into our new array
 			analyser.getByteFrequencyData(freqByteData);
 
@@ -40,23 +38,22 @@ $(function() {
 			canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
 			// For each "bucket" in the frequency data, draw a line corresponding to its magnitude
-			for (var i = 0; i < freqByteData.length; i++) {
+			for (let i = 0; i < freqByteData.length; i++) {
 				canvasContext.fillRect(i, canvas.height - freqByteData[i], 1, canvas.height);
 			}
 		}
-	}; //visualisation
+	}; // Visualisation
 
-	radio('Audio:start').subscribe(function() {
+	radio('Audio:start').subscribe(() => {
 		visualisation.init();
 	});
 
-
-	/* 
+	/*
 	*	Listen for messages us telling us the user has just updated the controls
 	*/
-	radio('Controls:filter').subscribe(function(msg) {
-		var filter = msg.filter;
-		var value = msg.value;
+	radio('Controls:filter').subscribe(msg => {
+		const filter = msg.filter;
+		const value = msg.value;
 		if (filter == 'filter-1') {
 			changePlaybackRate(value);
 		} else if (filter == 'filter-2') {
@@ -65,46 +62,46 @@ $(function() {
 			setLowPassFrequency(value);
 		}
 		/*
-		if (filter === 'filter-3') {
+		If (filter === 'filter-3') {
 			filters.filter3({
 				context: context,
 				value: value
 			});
 		}
 		*/
-	});		
+	});
 
-	info({ helloFromAudio: true });
+	info({helloFromAudio: true});
 
-	var context = audioContext = new AudioContext(),
-			source,
-			output;
+	const context = audioContext = new AudioContext();
 
-	var assets = new AbbeyLoad( [{
-       'audioInput' : 'sound.wav'
-   }], function (buffers) {
+	let source;
 
+	let output;
+
+	const assets = new AbbeyLoad([{
+		audioInput: 'sound.wav'
+	}], (buffers => {
    		audioInput = createSourceWithBuffer(buffers.audioInput);
 
    		// Broadcast current playback rate
-   		radio("Audio:filter").broadcast({
+   		radio('Audio:filter').broadcast({
 			filter: 'filter-1',
 			value: audioInput.playbackRate.value
 		});
 
-		radio("Audio:filter").broadcast({
+		radio('Audio:filter').broadcast({
 			filter: 'filter-2',
 			value: 0
 		});
 
-		radio("Audio:filter").broadcast({
+		radio('Audio:filter').broadcast({
 			filter: 'filter-3',
 			value: 2
 		});
 
 	    outputMix = audioContext.createGain();
 
-	    
 		// Create the filter
 		lowPassFilter = context.createBiquadFilter();
 		// Create the audio graph.
@@ -117,20 +114,19 @@ $(function() {
 		audioInput.connect(lowPassFilter);
 
 		lowPassFilter.connect(outputMix);
-		
-		//audioInput.connect(outputMix);
-	    outputMix.connect( audioContext.destination);
+
+		// AudioInput.connect(outputMix);
+	    outputMix.connect(audioContext.destination);
 
 	    window.s = audioInput;
 
-	    //currentEffectNode = createReverb();
-	    //currentEffectNode.connect(audioInput);
+	    // CurrentEffectNode = createReverb();
+	    // currentEffectNode.connect(audioInput);
 
 	    createRingModulator();
 
-	    //createDelay();
-
-   });
+	    // CreateDelay();
+	}));
 
 	function playAudio() {
 		audioInput.start(0);
@@ -143,62 +139,55 @@ $(function() {
 	window.playAudio = playAudio;
 	window.pauseAudio = pauseAudio;
 
-/*
+	/*
 	Helpers
 */
 
 	// shortcut broadcast to info channel
 	function info(msg) {
-		radio("info").broadcast(msg);
-	};
+		radio('info').broadcast(msg);
+	}
 
-  function createSourceWithBuffer(buffer) {
-    var source = context.createBufferSource();
+	function createSourceWithBuffer(buffer) {
+		const source = context.createBufferSource();
 
+		analyser = context.createAnalyser();
+		source.connect(analyser);
+		analyser.connect(context.destination);
 
+		console.log('buffer', buffer);
 
-	analyser = context.createAnalyser();
-	source.connect(analyser);
-	analyser.connect(context.destination);
+		// Create a gain node.
+		source.buffer = buffer;
+		// Turn on looping.
+		source.loop = true;
 
+		// Connect gain to destination.
+		// gainNode.connect(context.destination);
 
+		return source;
+	}
 
-    console.log('buffer', buffer)
-
-    // Create a gain node.
-    source.buffer = buffer;
-    // Turn on looping.
-    source.loop = true;
-
-    // Connect gain to destination.
-    //gainNode.connect(context.destination);
-
-    return source;
-  }
-
-
-/*
+	/*
 	Effects
 */
 
-function setLowPassFrequency (value) {
-    var minValue = 40;
-    var maxValue = context.sampleRate / 2;
-    var numberOfOctaves = Math.log(maxValue / minValue) / Math.LN2;
-    var multiplier = Math.pow(2, numberOfOctaves * (value - 1.0));
-    lowPassFilter.frequency.value = maxValue * multiplier;
-}
+	function setLowPassFrequency(value) {
+		const minValue = 40;
+		const maxValue = context.sampleRate / 2;
+		const numberOfOctaves = Math.log(maxValue / minValue) / Math.LN2;
+		const multiplier = 2 ** numberOfOctaves * (value - 1.0);
+		lowPassFilter.frequency.value = maxValue * multiplier;
+	}
 
-function changePlaybackRate(val) {
-	audioInput.playbackRate.value = val;
-}
+	function changePlaybackRate(val) {
+		audioInput.playbackRate.value = val;
+	}
 
-var vInDiode1, vInDiode2, vcDiode3, vcDiode4;
+	let vInDiode1; let vInDiode2; let vcDiode3; let vcDiode4;
 
-function createRingModulator() {
-
-	DiodeNode = (function() {
-
+	function createRingModulator() {
+		DiodeNode = (function () {
 	    function DiodeNode(context) {
 	      this.context = context;
 	      this.node = this.context.createWaveShaper();
@@ -208,36 +197,35 @@ function createRingModulator() {
 	      this.setCurve();
 	    }
 
-	    DiodeNode.prototype.setDistortion = function(distortion) {
+	    DiodeNode.prototype.setDistortion = function (distortion) {
 	      this.h = distortion;
 	      return this.setCurve();
 	    };
 
-	    DiodeNode.prototype.setCurve = function() {
-	      var i, samples, v, value, wsCurve, _i, _ref;
+	    DiodeNode.prototype.setCurve = function () {
+	      let i; let samples; let v; let value; let wsCurve; let _i; let _ref;
 	      samples = 1024;
 	      wsCurve = new Float32Array(samples);
-	      for (i = _i = 0, _ref = wsCurve.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+	      for (i = _i = 0, _ref = wsCurve.length; _ref >= 0 ? _i < _ref : _i > _ref; i = _ref >= 0 ? ++_i : --_i) {
 	        v = (i - samples / 2) / (samples / 2);
 	        v = Math.abs(v);
 	        if (v <= this.vb) {
 	          value = 0;
 	        } else if ((this.vb < v) && (v <= this.vl)) {
-	          value = this.h * ((Math.pow(v - this.vb, 2)) / (2 * this.vl - 2 * this.vb));
+	          value = this.h * ((v - this.vb ** 2) / (2 * this.vl - 2 * this.vb));
 	        } else {
-	          value = this.h * v - this.h * this.vl + (this.h * ((Math.pow(this.vl - this.vb, 2)) / (2 * this.vl - 2 * this.vb)));
+	          value = this.h * v - this.h * this.vl + (this.h * ((this.vl - this.vb ** 2) / (2 * this.vl - 2 * this.vb)));
 	        }
 	        wsCurve[i] = value;
 	      }
 	      return this.node.curve = wsCurve;
 	    };
 
-	    DiodeNode.prototype.connect = function(destination) {
+	    DiodeNode.prototype.connect = function (destination) {
 	      return this.node.connect(destination);
 	    };
 
 	    return DiodeNode;
-
 	  })();
 
 	  vIn = context.createOscillator();
@@ -253,7 +241,7 @@ function createRingModulator() {
 	  vInDiode2 = new DiodeNode(context);
 	  vInInverter3 = context.createGain();
 	  vInInverter3.gain.value = -1;
-	  //player = new SamplePlayer(context);
+	  // Player = new SamplePlayer(context);
 	  vcInverter1 = context.createGain();
 	  vcInverter1.gain.value = -1;
 	  vcDiode3 = new DiodeNode(context);
@@ -262,8 +250,8 @@ function createRingModulator() {
 	  outGain.gain.value = 4;
 	  compressor = context.createDynamicsCompressor();
 	  compressor.threshold.value = -12;
-	  //player.connect(vcInverter1);
-	  //player.connect(vcDiode4);
+	  // Player.connect(vcInverter1);
+	  // player.connect(vcDiode4);
 	  audioInput.connect(vcInverter1);
 	  audioInput.connect(vcDiode4.node);
 	  vcInverter1.connect(vcDiode3.node);
@@ -283,13 +271,12 @@ function createRingModulator() {
 	  outGain.connect(outputMix);
 
 	  setRingModulatorDistortion(0);
-}
+	}
 
-function setRingModulatorDistortion(val) {
-    console.log("Distortion ", val/25);
-	[vInDiode1, vInDiode2, vcDiode3, vcDiode4].forEach(function(diode) {
-    return diode.setDistortion(val/25);
-  });
-}
-
+	function setRingModulatorDistortion(val) {
+		console.log('Distortion ', val / 25);
+		[vInDiode1, vInDiode2, vcDiode3, vcDiode4].forEach(diode => {
+			return diode.setDistortion(val / 25);
+		});
+	}
 });
