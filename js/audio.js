@@ -216,8 +216,10 @@ $(() => {
 	        } else {
 	          value = this.h * v - this.h * this.vl + (this.h * ((this.vl - this.vb ** 2) / (2 * this.vl - 2 * this.vb)));
 	        }
+
 	        wsCurve[i] = value;
 	      }
+
 	      return this.node.curve = wsCurve;
 	    };
 
@@ -274,7 +276,7 @@ $(() => {
 	}
 
 	function setRingModulatorDistortion(val) {
-		console.log('Distortion ', val / 25);
+		console.log('Distortion', val / 25);
 		[vInDiode1, vInDiode2, vcDiode3, vcDiode4].forEach(diode => {
 			return diode.setDistortion(val / 25);
 		});

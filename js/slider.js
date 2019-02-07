@@ -9,7 +9,7 @@ $(() => {
 	});
 
 	$('.slider input').on('change', function (val) {
-		console.log('Changed ', val);
+		console.log('Changed', val);
 		$(this).parent('.slider').find('.value').text($(this).val());
 
 		// When we change the slider manually, publish an event

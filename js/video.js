@@ -12,7 +12,7 @@ function startVideo() {
 
 	navigator.webkitGetUserMedia({audio: false, video: true}, localMediaStream => {
 		const video = $('#myvideo');
-		// const myVideoStream = window.URL.createObjectURL(localMediaStream);
+		// Const myVideoStream = window.URL.createObjectURL(localMediaStream);
 		// video.attr('src', myVideoStream);
 		video[0].srcObject = localMediaStream;
 		startVideoAndAR(video[0]);
@@ -25,7 +25,7 @@ function startVideoAndAR2(video) {
 	const canvas = document.createElement('canvas');
 	canvas.width = 640;
 	canvas.height = 480;
-	document.querySelector('.media').appendChild(canvas);
+	document.querySelector('.media').append(canvas);
 
 	// Create a RGB raster object for the 2D canvas.
 	// JSARToolKit uses raster objects to read image data.
@@ -79,6 +79,7 @@ function startVideoAndAR2(video) {
 			if (markers[currId] == null) {
 				markers[currId] = {};
 			}
+
 			// Get the transformation matrix for the detected marker.
 			detector.getTransformMatrix(idx, resultMat);
 
@@ -94,7 +95,7 @@ function startVideoAndAR(video) {
 	canvas.height = 480;
 	const raster = new NyARRgbRaster_Canvas2D(canvas);
 	canvas.id = 'ar-canvas';
-	document.querySelector('.media').appendChild(canvas);
+	document.querySelector('.media').append(canvas);
 
 	const param = new FLARParam(640, 480);
 	const pmat = mat4.identity();
@@ -116,6 +117,7 @@ function startVideoAndAR(video) {
 		if (video.paused) {
 			return;
 		}
+
 		if (window.paused) {
 			return;
 		}
@@ -138,9 +140,11 @@ function startVideoAndAR(video) {
 					currId = (currId << 8) | id.getPacketData(i);
 				}
 			}
+
 			if (!pastResults[currId]) {
 				pastResults[currId] = {};
 			}
+
 			detector.getTransformMatrix(idx, resultMat);
 			pastResults[currId].age = 0;
 			var mat = resultMat;
@@ -180,6 +184,7 @@ function startVideoAndAR(video) {
 					value: actualRotationValueToProvide
 				});
 			}
+
 			if (id._check == 2) {
 				var min = 1;
 				var max = 30;
@@ -193,6 +198,7 @@ function startVideoAndAR(video) {
 					value: actualRotationValueToProvide
 				});
 			}
+
 			if (id._check == 3) {
 				var min = 0.1;
 				var max = 1;
@@ -206,18 +212,22 @@ function startVideoAndAR(video) {
 					value: actualRotationValueToProvide
 				});
 			}
+
 			pastResults[currId].transform = cm;
 			if (idx == 0) {
 				times.push(new Date() - t);
 			}
 		}
+
 		for (var i in pastResults) {
 			const r = pastResults[i];
 			if (r.age > 10) {
 				delete pastResults[i];
 			}
+
 			r.age++;
 		}
+
 		const w2 = 640 / 2;
 		const h2 = 480 / 2;
 		for (var i in pastResults) {
@@ -265,15 +275,18 @@ function startVideoAndAR(video) {
 			ctx.fill();
 			ctx.restore();
 		}
+
 		if (detected == 0) {
 			times.push(new Date() - t);
 		}
+
 		if (times.length > 100) {
 			if (window.console) {
 				console.log(times.reduce((s, i) => {
 					return s + i;
 				}) / times.length);
 			}
+
 			times.splice(0);
 		}
 	}, 50);
